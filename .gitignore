@@ -1,0 +1,14 @@
+.idea/
+# ignore vim and emacs history files
+*~
+*#
+*.swp
+*.un~
+# ignore vim and exim history files
+*~
+# ignore compiled python
+*.pyc
+# ignore emacs history files
+*~
+\#*\#
+*.yml#
