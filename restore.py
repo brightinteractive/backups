@@ -2,9 +2,17 @@
 
 import boto3
 
-def create_aws_session():
-    return boto3.session.Session()
+class S3Resource(object):
+    def __init__(self):
+        session = create_aws_session()
+        resource = create_s3_resource(session)
 
-def create_s3_resource(session):
-    return session.resource('s3')
+    @classmethod
+    def create_aws_session(cls):
+        return boto3.session.Session()
+
+    @classmethod
+    def create_s3_resource(cls, session=None):
+        session = session or cls.create_aws_session()
+        return session.resource('s3')
 
