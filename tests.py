@@ -24,6 +24,7 @@ class RestoreTests(unittest.TestCase):
             credentials = session.get_credentials()
             self.assertEqual(test_credentials['AWS_ACCESS_KEY_ID'], credentials.access_key)
             self.assertEqual(test_credentials['AWS_SECRET_ACCESS_KEY'], credentials.secret_key)
+
     def test_create_s3_resource_returns_an_aws_s3_resource_using_session_param(self):
         mock_resource = object()
         mock_session = Mock()
