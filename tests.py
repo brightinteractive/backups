@@ -6,7 +6,7 @@ import boto3
 from mock import patch, Mock, MagicMock
 
 import restore
-from restore import S3Resource
+from restore import S3Resource, S3Restore
 
 class ResourceTests(unittest.TestCase):
 
@@ -81,3 +81,10 @@ class ResourceTests(unittest.TestCase):
             expected_api_call.assert_called_once()
             self.assertEqual(result, result_of_api_call)
 
+    def test_is_glacier_type_returns_true_for_glacier_objects_and_false_otherwise(self):
+        mock_summary_object = Mock()
+        mock_summary_object.storage_class = 'GLACIER'
+        self.assertTrue(S3Restore.is_glacier_type(mock_summary_object))
+
+        mock_summary_object.storage_class = 'Something else'
+        self.assertFalse(S3Restore.is_glacier_type(mock_summary_object))

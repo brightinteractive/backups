@@ -22,3 +22,8 @@ class S3Resource(object):
         bucket = self.get_s3_bucket_by_name(bucket_name)
         return bucket.objects.all()
 
+class S3Restore(object):
+    @classmethod
+    def is_glacier_type(cls, s3_obj_summary):
+        return s3_obj_summary.storage_class == 'GLACIER'
+
