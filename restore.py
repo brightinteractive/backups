@@ -18,3 +18,7 @@ class S3Resource(object):
     def get_s3_bucket_by_name(self, bucket_name):
         return self.resource.Bucket(bucket_name)
 
+    def get_s3_objects_by_bucket_name(self, bucket_name):
+        bucket = self.get_s3_bucket_by_name(bucket_name)
+        return bucket.objects.all()
+

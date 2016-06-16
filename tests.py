@@ -36,28 +36,48 @@ class ResourceTests(unittest.TestCase):
 
         mock_session.resource.assert_called_with('s3')
 
-    def test_create_s3_resource_creates_new_session_if_one_is_not_passed_to_it(self):
-        with patch.object(S3Resource, 'create_aws_session') as mock:
-            S3Resource.create_s3_resource()
-            mock.assert_called_once()
-
-    def test_get_s3_bucket_by_name_passes_expected_name_to_resource_Bucket_method(self):
-        test_name = object()
+    @patch.object(restore.S3Resource,'create_s3_resource')
+    def test_get_s3_bucket_by_name_passes_expected_name_to_expected_boto3_api_call(self, mock):
         mock_resource = Mock()
         mock_resource.Bucket = MagicMock()
+        mock.return_value = mock_resource
 
-        resource = S3Resource(resource=mock_resource)
-        resource.get_s3_bucket_by_name(test_name)
+        expected_name = object()
+        expected_api_call = mock_resource.Bucket
 
-        mock_resource.Bucket.assert_called_with(test_name)
+        resource = S3Resource()
+        resource.get_s3_bucket_by_name(expected_name)
 
-    def test_get_s3_bucket_by_name_returns_result_of_resource_Bucket_method(self):
-        test_bucket = object()
+        expected_api_call.assert_called_with(expected_name)
+
+    @patch.object(restore.S3Resource,'create_s3_resource')
+    def test_get_s3_bucket_by_name_returns_result_of_expected_boto3_api_call(self, mock):
+        result_of_api_call = object()
+
         mock_resource = Mock()
-        mock_resource.Bucket = MagicMock(return_value=test_bucket)
+        mock_resource.Bucket = Mock()
+        mock.return_value = mock_resource
 
-        resource = S3Resource(resource=mock_resource)
-        bucket = resource.get_s3_bucket_by_name('test name')
+        expected_api_call = mock_resource.Bucket
+        expected_api_call.return_value = result_of_api_call
 
-        self.assertEqual(test_bucket, bucket)
+        resource = S3Resource()
+        result = resource.get_s3_bucket_by_name('test name')
+        expected_api_call.assert_called_once()
+        self.assertEqual(result_of_api_call, result_of_api_call)
+
+    @patch.object(restore.S3Resource,'create_s3_resource')
+    def test_get_s3_objects_by_bucket_returns_result_of_expected_boto3_api_call(self, mock_resource):
+        result_of_api_call = object()
+
+        mock_bucket = Mock()
+        mock_bucket.objects = Mock()
+        mock_bucket.objects.all = MagicMock(return_value=result_of_api_call)
+        expected_api_call = mock_bucket.objects.all
+
+        with patch.object(S3Resource, 'get_s3_bucket_by_name', return_value=mock_bucket):
+            resource = S3Resource()
+            result = resource.get_s3_objects_by_bucket_name('test name')
+            expected_api_call.assert_called_once()
+            self.assertEqual(result, result_of_api_call)
 
