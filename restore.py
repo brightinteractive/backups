@@ -27,3 +27,8 @@ class S3Restore(object):
     def is_glacier_type(cls, s3_obj_summary):
         return s3_obj_summary.storage_class == 'GLACIER'
 
+    @classmethod
+    def is_not_restored(cls, s3_obj_summary):
+        s3_obj_detail = s3_obj_summary.Object()
+        return s3_obj_detail.restore is None
+

@@ -88,3 +88,15 @@ class ResourceTests(unittest.TestCase):
 
         mock_summary_object.storage_class = 'Something else'
         self.assertFalse(S3Restore.is_glacier_type(mock_summary_object))
+
+    def test_is_not_restored_returns_true_if_s3_object_is_not_restored(self):
+        mock_detail_object = Mock()
+        mock_summary_object = Mock()
+        mock_summary_object.Object = MagicMock(return_value=mock_detail_object)
+
+        mock_detail_object.restore = None
+        self.assertTrue(S3Restore.is_not_restored(mock_summary_object))
+
+        mock_detail_object.restore = 'returns a string is restore is in progress or completed'
+        self.assertFalse(S3Restore.is_not_restored(mock_summary_object))
+
