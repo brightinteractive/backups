@@ -23,6 +23,13 @@ class S3Resource(object):
         return bucket.objects.all()
 
 class S3Restore(object):
+    RestoreRequest = { 'Days' : 7 }
+
+    @classmethod
+    def restore_s3_object(cls, s3_obj_summary):
+        if cls.is_glacier_type(s3_obj_summary) and cls.is_not_restored(s3_obj_summary):
+            cls.call_restore(s3_obj_summary)
+
     @classmethod
     def is_glacier_type(cls, s3_obj_summary):
         return s3_obj_summary.storage_class == 'GLACIER'
@@ -31,4 +38,8 @@ class S3Restore(object):
     def is_not_restored(cls, s3_obj_summary):
         s3_obj_detail = s3_obj_summary.Object()
         return s3_obj_detail.restore is None
+
+    @classmethod
+    def call_restore(cls, s3_obj_summary):
+        return s3_obj_summary.restore_object(RestoreRequest=cls.RestoreRequest)
 

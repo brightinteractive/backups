@@ -100,3 +100,55 @@ class ResourceTests(unittest.TestCase):
         mock_detail_object.restore = 'returns a string is restore is in progress or completed'
         self.assertFalse(S3Restore.is_not_restored(mock_summary_object))
 
+    def test_restore_s3_object_calls_call_restore_when_object_is_glacier_and_not_restored(self):
+        mock_detail_object = Mock()
+        mock_summary_object = Mock()
+        mock_summary_object.Object = MagicMock(return_value=mock_detail_object)
+
+        mock_summary_object.storage_class = 'GLACIER'
+        mock_detail_object.restore = None
+
+        with patch.object(S3Restore, 'call_restore') as mock:
+            S3Restore.restore_s3_object(mock_summary_object)
+            mock.assert_called_once()
+
+        self.assertTrue(S3Restore.is_glacier_type(mock_summary_object))
+
+    def test_restore_s3_object_calls_call_restore_with_same_s3_object(self):
+        mock_detail_object = Mock()
+        mock_summary_object = Mock()
+        mock_summary_object.Object = MagicMock(return_value=mock_detail_object)
+
+        mock_summary_object.storage_class = 'GLACIER'
+        mock_detail_object.restore = None
+
+        with patch.object(S3Restore, 'call_restore') as mock:
+            S3Restore.restore_s3_object(mock_summary_object)
+            mock.assert_called_with(mock_summary_object)
+
+    def test_call_restore_makes_expected_boto3_api_call(self):
+        mock_summary_object = Mock()
+        mock_summary_object.restore_object = Mock()
+        expected_api_call = mock_summary_object.restore_object
+
+        S3Restore.call_restore(mock_summary_object)
+        expected_api_call.assert_called_once()
+
+    def test_call_restore_returns_result_from_expected_boto3_api_call(self):
+        result_from_api = object()
+        mock_summary_object = Mock()
+        mock_summary_object.restore_object = MagicMock(return_value=result_from_api)
+        expected_api_call = mock_summary_object.restore_object
+
+        result = S3Restore.call_restore(mock_summary_object)
+        expected_api_call.assert_called_once()
+        self.assertEqual(result, result_from_api)
+
+    def test_call_restore_makes_a_restore_request_for_7_days(self):
+        mock_summary_object = Mock()
+        mock_summary_object.restore_object = Mock()
+        expected_api_call = mock_summary_object.restore_object
+
+        result = S3Restore.call_restore(mock_summary_object)
+        expected_api_call.assert_called_with(RestoreRequest={ 'Days' : 7 })
+
