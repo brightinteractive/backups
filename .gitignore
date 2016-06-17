@@ -12,3 +12,5 @@
 *~
 \#*\#
 *.yml#
+# Configuration file
+config.py
