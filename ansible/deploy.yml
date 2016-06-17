@@ -1,0 +1,6 @@
+---
+- hosts: all
+  tasks:
+      - name: inject environemt variables into config template
+        template: src=config.j2 dest=../config.py
+...
