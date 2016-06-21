@@ -56,3 +56,12 @@ class AWSApiWrapperTests(unittest.TestCase):
             call_to_restore.assert_called_with(mock_summary_object)
 
         self.assertTrue(S3Restore.is_glacier_type(mock_summary_object))
+
+    def test__we_restore_an_object_for_seven_days(self):
+        mock_summary_object = Mock()
+        mock_summary_object.restore_object = Mock()
+        expected_api_call = mock_summary_object.restore_object
+
+        result = S3Restore.call_restore(mock_summary_object)
+        expected_api_call.assert_called_with(RestoreRequest={ 'Days' : 7 })
+
