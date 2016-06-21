@@ -15,3 +15,8 @@ def main(args):
     restore = S3Restore()
     restore.bucket(bucket)
 
+if __name__ == '__main__':
+    setup()
+    args = parse_args()
+    main(args)
+
