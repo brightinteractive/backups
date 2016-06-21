@@ -65,3 +65,16 @@ class AWSApiWrapperTests(unittest.TestCase):
         result = S3Restore.call_restore(mock_summary_object)
         expected_api_call.assert_called_with(RestoreRequest={ 'Days' : 7 })
 
+    @patch.object(S3Restore, 'restore_s3_object')
+    @patch.object(AWSApiWrapper, 'get_s3_objects_by_bucket_name')
+    def test__we_can_restore_all_the_objects_in_a_named_s3_bucket(self, aws_api_call, s3_restore_call):
+        s3_object = Mock()
+        mock_bucket_contents = [s3_object, s3_object, s3_object]
+        number_of_objects_in_mock_bucket = len(mock_bucket_contents)
+        aws_api_call.return_value = mock_bucket_contents
+
+        restore = S3Restore()
+        restore.bucket('test bucket')
+
+        self.assertEqual(s3_restore_call.call_count, 3)
+

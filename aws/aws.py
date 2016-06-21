@@ -25,7 +25,12 @@ class AWSApiWrapper(object):
 
 
 class S3Restore(object):
+    '''This class wraps Boto3 Object endpoints, see official Boto3 documentation:
+        http://boto3.readthedocs.io/en/latest/reference/services/s3.html#S3.Object
+    '''
     RestoreRequest = { 'Days' : 7 }
+    def __init__(self):
+       self.aws = AWSApiWrapper()
 
     @classmethod
     def restore_s3_object(cls, s3_obj_summary):
@@ -48,4 +53,9 @@ class S3Restore(object):
     @classmethod
     def call_restore(cls, s3_obj_summary):
         return s3_obj_summary.restore_object(RestoreRequest=cls.RestoreRequest)
+
+    def bucket(self, bucket):
+        objects = self.aws.get_s3_objects_by_bucket_name(bucket)
+        for object in objects:
+           self.restore_s3_object(object)
 
