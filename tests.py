@@ -28,3 +28,9 @@ class RestoreMainTests(unittest.TestCase):
             main(mock_args)
             restore_bucket.assert_called_with(name_of_bucket_to_be_restored)
 
+class RestoreSetupTests(unittest.TestCase):
+    def test__aws_credentials_are_available_as_environment_variables(self):
+        setup()
+        self.assertTrue(os.environ.has_key('AWS_SECRET_ACCESS_KEY'))
+        self.assertTrue(os.environ.has_key('AWS_ACCESS_KEY_ID'))
+

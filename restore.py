@@ -7,6 +7,9 @@ from config import EnvironmentVariables
 from parser import parse_args
 
 
+def setup():
+    EnvironmentVariables.inject()
+
 def main(args):
     bucket = args.bucket
     restore = S3Restore()
