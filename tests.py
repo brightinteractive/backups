@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-import unittest
+import unittest, os
 
-from restore import create_parser
+from parser import create_parser
 
 
 class RestoreCommandLineTests(unittest.TestCase):
-    def test__we_can_parse_and_retreive_the_name_of_the_bucket_to_be_restored(self):
+    def test__we_can_retrieve_the_name_of_the_bucket_to_be_restored_from_commandline_arguments(self):
         name_of_bucket_to_be_restored = 'test bucket'
 
         parser = create_parser()
