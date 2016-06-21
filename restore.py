@@ -2,9 +2,13 @@
 
 import argparse
 
+from aws.aws import S3Restore
+from config import EnvironmentVariables
+from parser import parse_args
 
-def create_parser():
-    parser = argparse.ArgumentParser(description='AssetBank S3 restore from Glacier')
-    parser.add_argument('bucket', help='name of backup bucket to restore')
-    return parser
+
+def main(args):
+    bucket = args.bucket
+    restore = S3Restore()
+    restore.bucket(bucket)
 
