@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 
-class _Config(object):
-    allowed_metrics = ( '', )
-
 
 class Metrics(object):
-    def __init__(self):
-        for metric in _Config.allowed_metrics:
+    def __init__(self, allowed_metrics):
+        for metric in allowed_metrics:
             setattr(self, metric, None)
 
     def available(self):
