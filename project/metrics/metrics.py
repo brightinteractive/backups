@@ -2,15 +2,15 @@
 
 
 class Metrics(object):
-    def __init__(self, allowed_metrics):
-        for metric in allowed_metrics:
-            setattr(self, metric, None)
+    def __init__(self):
+        self.report = dict()
 
     def available(self):
-        return self.report().keys()
+        return self.report.keys()
 
-    def report(self):
-        return self.__dict__
+    def add(self, metric):
+        if not self.report.has_key(metric):
+            self.report[metric] = None
 
     @staticmethod
     def counter(metric, metric_obj):
@@ -19,11 +19,11 @@ class Metrics(object):
 
         def wrapper(fn):
             def _counter(*args, **kwargs):
-                if metric_obj.__dict__[metric]:
-                    metric_obj.__dict__[metric] += 1
+                if metric_obj.report[metric]:
+                    metric_obj.report[metric] += 1
                 else:
-                    metric_obj.__dict__[metric] = 1
-                return fn()
+                    metric_obj.report[metric] = 1
+                return fn(*args, **kwargs)
             return _counter
         return wrapper
 
