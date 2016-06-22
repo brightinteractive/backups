@@ -7,6 +7,11 @@ import boto3
 from metrics import Metrics
 
 
+class AWSMetrics(Metrics):
+    available_metrics = ('number_of_objects', 'number_of_requests')
+
+AWSMetrics.reset()
+
 class AWSApiWrapper(object):
     def __init__(self):
         self.session = self.create_aws_session()
@@ -35,6 +40,7 @@ class S3Restore(object):
        self.aws = AWSApiWrapper()
     
     @classmethod
+    @AWSMetrics.counter('number_of_objects')
     def restore_s3_object(cls, s3_obj_summary):
         if cls._object_should_be_restored(s3_obj_summary):
             return cls.call_restore(s3_obj_summary)
@@ -53,6 +59,7 @@ class S3Restore(object):
         return s3_obj_detail.restore is None
 
     @classmethod
+    @AWSMetrics.counter('number_of_requests')
     def call_restore(cls, s3_obj_summary):
         return s3_obj_summary.restore_object(RestoreRequest=cls.RestoreRequest)
 
@@ -60,4 +67,5 @@ class S3Restore(object):
         objects = self.aws.get_s3_objects_by_bucket_name(bucket)
         for object in objects:
            self.restore_s3_object(object)
+
 
