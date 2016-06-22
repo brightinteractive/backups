@@ -19,8 +19,7 @@ class Metrics(object):
 
     @classmethod
     def reset(self):
-        for metric in self.available_metrics:
-            self.report = dict.fromkeys(self.available_metrics)
+        self.report = dict.fromkeys(self.available_metrics)
 
 
     @classmethod
