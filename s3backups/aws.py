@@ -4,6 +4,8 @@ import argparse
 
 import boto3
 
+from metrics import Metrics
+
 
 class AWSApiWrapper(object):
     def __init__(self):
@@ -31,7 +33,7 @@ class S3Restore(object):
     RestoreRequest = { 'Days' : 7 }
     def __init__(self):
        self.aws = AWSApiWrapper()
-
+    
     @classmethod
     def restore_s3_object(cls, s3_obj_summary):
         if cls._object_should_be_restored(s3_obj_summary):

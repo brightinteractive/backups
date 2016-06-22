@@ -5,7 +5,7 @@ import unittest, os, collections
 import boto3
 from mock import patch, Mock, MagicMock
 
-from aws import AWSApiWrapper, S3Restore
+from s3backups.aws import AWSApiWrapper, S3Restore
 
 
 class AWSApiWrapperTests(unittest.TestCase):

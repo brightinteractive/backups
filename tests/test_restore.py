@@ -4,9 +4,9 @@ import unittest, os
 
 from mock import Mock, patch
 
-from restore import main, setup
-from parser import create_parser
-from aws.aws import S3Restore
+from s3backups.restore import main, setup
+from s3backups.parser import create_parser
+from s3backups.aws import S3Restore
 
 
 class RestoreCommandLineTests(unittest.TestCase):

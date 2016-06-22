@@ -2,7 +2,7 @@
 
 import argparse
 
-from aws.aws import S3Restore
+from aws import S3Restore
 from config import EnvironmentVariables
 from parser import parse_args
 

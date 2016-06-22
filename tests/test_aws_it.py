@@ -4,10 +4,13 @@ import unittest, os, collections
 
 import boto3
 
-from aws import AWSApiWrapper
+from s3backups.aws import AWSApiWrapper
+from config import EnvironmentVariables
 
 
 class AWSApiWrapperTestsIT(unittest.TestCase):
+    def setup(self):
+        EnvironmentVariables.inject()
 
     def test__we_can_create_an_aws_session(self):
         aws = AWSApiWrapper()
@@ -20,6 +23,7 @@ class AWSApiWrapperTestsIT(unittest.TestCase):
         self.assertIsInstance(resource, boto3.resources.base.ServiceResource)
 
     def test__we_can_get_all_objects_within_a_named_bucket(self):
+        
         ''' For this test to pass there must be a bucket called:
             test-we-can-get-all-objects-from-a-named-bucket
         and it must have 3 objects in it: one.txt, two.txt, three.txt
