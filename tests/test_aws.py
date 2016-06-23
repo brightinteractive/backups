@@ -9,7 +9,6 @@ from s3backups.aws import AWSApiWrapper, S3Restore
 
 
 class AWSApiWrapperTests(unittest.TestCase):
-
     def test__we_can_create_an_aws_session_with_credentials_stored_in_environment_variables(self):
         test_credentials = {
                 'AWS_ACCESS_KEY_ID':'test access key',
