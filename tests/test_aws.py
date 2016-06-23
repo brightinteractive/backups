@@ -23,6 +23,7 @@ class AWSApiWrapperTests(unittest.TestCase):
             self.assertEqual(test_credentials['AWS_ACCESS_KEY_ID'], credentials.access_key)
             self.assertEqual(test_credentials['AWS_SECRET_ACCESS_KEY'], credentials.secret_key)
 
+class S3RestoreTests
     def test__we_can_identify_an_s3_object_with_glacier_storage_class(self):
         mock_s3_object = Mock()
         mock_s3_object.storage_class = 'GLACIER'
