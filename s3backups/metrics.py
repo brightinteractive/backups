@@ -25,18 +25,21 @@ class Metrics(object):
 
 
     @classmethod
-    def counter(cls, metric):
+    def counter(cls, metric, when_returns=None):
         if metric not in cls.available():
             raise AttributeError('\'%s\' is not an available metric.'% metric)
 
         def wrapper(fn):
             def _counter(*args, **kwargs):
-                with cls._lock:
-                    if cls.report[metric]:
-                        cls.report[metric] += 1
-                    else:
-                        cls.report[metric] = 1
-                return fn(*args, **kwargs)
+                result = fn(*args, **kwargs)
+                should_count = (when_returns == None) or (when_returns == result)
+                if should_count:
+                    with cls._lock:
+                        if cls.report[metric]:
+                            cls.report[metric] += 1
+                        else:
+                            cls.report[metric] = 1
+                return result
             return _counter
         return wrapper
 

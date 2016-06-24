@@ -10,7 +10,12 @@ from metrics import Metrics
 
 
 class AWSMetrics(Metrics):
-    available_metrics = ('restore_object_status_codes', 'number_of_objects', 'number_of_requests')
+    available_metrics = (
+            'number_of_glacier_objects',
+            'restore_object_status_codes',
+            'number_of_objects',
+            'number_of_requests'
+            )
 
     @classmethod
     def status_code(cls, metric):
@@ -76,6 +81,7 @@ class S3Restore(object):
         return cls.is_glacier_type(s3_obj_summary) and cls.is_not_restored(s3_obj_summary)
 
     @classmethod
+    @AWSMetrics.counter('number_of_glacier_objects', when_returns=True)
     def is_glacier_type(cls, s3_obj_summary):
         return s3_obj_summary.storage_class == 'GLACIER'
 

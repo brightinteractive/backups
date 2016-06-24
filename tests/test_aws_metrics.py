@@ -50,3 +50,17 @@ class AWSMetricsTests(unittest.TestCase):
         recorded_status_codes = AWSMetrics.report['restore_object_status_codes']
         self.assertEqual(status_codes_and_their_frequencies, recorded_status_codes)
 
+    def test__we_can_record_the_number_glacier_objects(self):
+        mock_s3_glacier_object = Mock()
+        mock_s3_glacier_object.storage_class = 'GLACIER'
+
+        mock_s3_standard_object = Mock()
+        mock_s3_standard_object.storage_class = 'STANDARD'
+
+        S3Restore.is_glacier_type(mock_s3_glacier_object)
+        S3Restore.is_glacier_type(mock_s3_standard_object)
+
+        number_of_glacier_objects = AWSMetrics.report['number_of_glacier_objects']
+        self.assertEquals(number_of_glacier_objects, 1)
+
+
