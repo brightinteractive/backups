@@ -7,6 +7,7 @@ import boto3
 from mock import patch, Mock, MagicMock
 
 from s3backups.aws import AWSApiWrapper, S3Restore
+from utils import mock_aws_response
 
 
 class AWSApiWrapperTests(unittest.TestCase):

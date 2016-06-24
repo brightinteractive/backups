@@ -6,6 +6,7 @@ import unittest
 from mock import patch, Mock, MagicMock
 
 from s3backups.aws import S3Restore, AWSApiWrapper, AWSMetrics
+from utils import mock_aws_response
 
 
 class AWSMetricsTests(unittest.TestCase):
@@ -24,7 +25,7 @@ class AWSMetricsTests(unittest.TestCase):
         self.assertEqual(number_of_recorded_objects, 3)
 
     def test__we_can_record_the_number_of_requests_made(self):
-        mock_response = self.mock_aws_response()
+        mock_response = mock_aws_response()
         mock_s3_object = Mock()
         mock_s3_object.restore_object = Mock(return_value=mock_response)
 
@@ -41,7 +42,7 @@ class AWSMetricsTests(unittest.TestCase):
 
         for status_code, number_of_responses in status_codes_and_their_frequencies.items():
             for response in range(number_of_responses):
-                response = self.mock_aws_response(HTTPStatusCode=status_code)
+                response = mock_aws_response(HTTPStatusCode=status_code)
                 mock_s3_object = Mock()
                 mock_s3_object.restore_object = MagicMock(return_value=response)
                 S3Restore.call_restore(mock_s3_object)
@@ -49,9 +50,3 @@ class AWSMetricsTests(unittest.TestCase):
         recorded_status_codes = AWSMetrics.report['restore_object_status_codes']
         self.assertEqual(status_codes_and_their_frequencies, recorded_status_codes)
 
-    def mock_aws_response(self, **kwargs):
-        response = { 'HTTPStatusCode': '200',
-                'HostId': 'KX19tFhyBOCZfaDAk78nnkLiAvVV8fUgv11LMykrn3aXwZhJcimxZEbqRmUYaalq/beynjJ4Hmw=',
-                'RequestId': '609FF741F8386E27' }
-        response.update(kwargs)
-        return { 'ResponseMetadata': response }
