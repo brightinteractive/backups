@@ -12,6 +12,7 @@ from metrics import Metrics
 class AWSMetrics(Metrics):
     available_metrics = (
             'number_of_glacier_objects',
+            'number_of_unrestored_objects',
             'restore_object_status_codes',
             'number_of_objects',
             'number_of_requests'
@@ -38,7 +39,9 @@ class AWSMetrics(Metrics):
             return _status_code
         return wrapper
 
+
 AWSMetrics.reset()
+
 
 class AWSApiWrapper(object):
     PAGE_SIZE = 1000
@@ -86,6 +89,7 @@ class S3Restore(object):
         return s3_obj_summary.storage_class == 'GLACIER'
 
     @classmethod
+    @AWSMetrics.counter('number_of_unrestored_objects', when_returns=True)
     def is_not_restored(cls, s3_obj_summary):
         s3_obj_detail = s3_obj_summary.Object()
         return s3_obj_detail.restore is None

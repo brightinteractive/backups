@@ -63,4 +63,20 @@ class AWSMetricsTests(unittest.TestCase):
         number_of_glacier_objects = AWSMetrics.report['number_of_glacier_objects']
         self.assertEquals(number_of_glacier_objects, 1)
 
+    def test__we_can_record_the_number_of_unrestored_objects(self):
+        mock_s3_unrestored_object = Mock()
+        mock_s3_detail_object = Mock()
+        mock_s3_unrestored_object.Object = MagicMock(return_value=mock_s3_detail_object)
+        mock_s3_detail_object.restore = None
+
+        mock_s3_restored_object = Mock()
+        mock_s3_detail_object = Mock()
+        mock_s3_restored_object.Object = MagicMock(return_value=mock_s3_detail_object)
+        mock_s3_detail_object.restore = 'I am restored'
+
+        S3Restore.is_not_restored(mock_s3_unrestored_object)
+        S3Restore.is_not_restored(mock_s3_restored_object)
+
+        number_of_unrestored_objects = AWSMetrics.report['number_of_unrestored_objects']
+        self.assertEquals(number_of_unrestored_objects, 1)
 
