@@ -1,7 +1,9 @@
 #!/usr/bin/env python
+from threading import Lock
 
 
 class Metrics(object):
+    _lock = Lock()
     available_metrics = ()
     report = dict.fromkeys(available_metrics)
 
@@ -29,10 +31,11 @@ class Metrics(object):
 
         def wrapper(fn):
             def _counter(*args, **kwargs):
-                if cls.report[metric]:
-                    cls.report[metric] += 1
-                else:
-                    cls.report[metric] = 1
+                with cls._lock:
+                    if cls.report[metric]:
+                        cls.report[metric] += 1
+                    else:
+                        cls.report[metric] = 1
                 return fn(*args, **kwargs)
             return _counter
         return wrapper
