@@ -56,9 +56,6 @@ class AWSApiWrapper(object):
 
 
 class S3Restore(object):
-    '''This class wraps Boto3 Object endpoints, see official Boto3 documentation:
-        http://boto3.readthedocs.io/en/latest/reference/services/s3.html#S3.Object
-    '''
     _sentinel = object()
     queue = Queue()
 
