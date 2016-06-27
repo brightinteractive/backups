@@ -2,21 +2,15 @@
 
 import argparse
 
-from aws import S3Restore
 from config import EnvironmentVariables
 from parser import parse_args
 
 
-def setup():
+def setup(settings):
     EnvironmentVariables.inject()
+    DryRun.state = getattr(settings, 'dry_run', False)
 
-def main(args):
-    bucket = args.bucket
-    restore = S3Restore()
-    restore.bucket(bucket)
 
 if __name__ == '__main__':
-    setup()
-    args = parse_args()
-    main(args)
-
+    settings = parse_args()
+    setup(settings)

@@ -18,6 +18,15 @@ class RestoreCommandLineTests(unittest.TestCase):
 
         self.assertEqual(args.bucket, name_of_bucket_to_be_restored)
 
+    def test__we_can_set_retrieve_the_dry_run_state_from_commandline_arguments(self):
+        parser = create_parser()
+
+        args = parser.parse_args(['test-bucket', '--dry-run'])
+        self.assertTrue(args.dry_run)
+
+        args = parser.parse_args(['test-bucket',])
+        self.assertFalse(args.dry_run)
+
 class RestoreMainTests(unittest.TestCase):
     def test__we_can_restore_the_bucket_passed_as_commandline_argument(self):
         mock_args = Mock()
@@ -30,7 +39,8 @@ class RestoreMainTests(unittest.TestCase):
 
 class RestoreSetupTests(unittest.TestCase):
     def test__aws_credentials_are_available_as_environment_variables(self):
-        setup()
+        settings = object()
+        setup(settings)
         self.assertTrue(os.environ.has_key('AWS_SECRET_ACCESS_KEY'))
         self.assertTrue(os.environ.has_key('AWS_ACCESS_KEY_ID'))
 
