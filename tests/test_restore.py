@@ -4,10 +4,16 @@ import unittest, os
 
 from mock import Mock, patch
 
-from s3backups.restore import main, setup
+from s3backups.restore import Restore, main, setup
 from s3backups.parser import create_parser
 from s3backups.aws import S3Restore
 
+
+class RestoreSetupTests(unittest.TestCase):
+    def test__aws_credentials_are_available_as_environment_variables(self):
+        setup()
+        self.assertTrue(os.environ.has_key('AWS_SECRET_ACCESS_KEY'))
+        self.assertTrue(os.environ.has_key('AWS_ACCESS_KEY_ID'))
 
 class RestoreCommandLineTests(unittest.TestCase):
     def test__we_can_retrieve_the_name_of_the_bucket_to_be_restored_from_commandline_arguments(self):
@@ -27,20 +33,12 @@ class RestoreCommandLineTests(unittest.TestCase):
         args = parser.parse_args(['test-bucket',])
         self.assertFalse(args.dry_run)
 
-class RestoreMainTests(unittest.TestCase):
-    def test__we_can_restore_the_bucket_passed_as_commandline_argument(self):
-        mock_args = Mock()
+class RestoreThreadTests(unittest.TestCase):
+    def test__we_can_create_a_thread_to_restore_a_bucket(self):
         name_of_bucket_to_be_restored = 'test bucket'
-        mock_args.bucket = name_of_bucket_to_be_restored
 
         with patch.object(S3Restore, 'bucket') as restore_bucket:
-            main(mock_args)
+            thread = Restore(name_of_bucket_to_be_restored)
+            thread.start()
             restore_bucket.assert_called_with(name_of_bucket_to_be_restored)
-
-class RestoreSetupTests(unittest.TestCase):
-    def test__aws_credentials_are_available_as_environment_variables(self):
-        settings = object()
-        setup(settings)
-        self.assertTrue(os.environ.has_key('AWS_SECRET_ACCESS_KEY'))
-        self.assertTrue(os.environ.has_key('AWS_ACCESS_KEY_ID'))
 
