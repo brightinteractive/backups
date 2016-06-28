@@ -45,6 +45,7 @@ AWSMetrics.reset()
 
 class AWSApiWrapper(object):
     PAGE_SIZE = 1000
+
     def __init__(self):
         self.session = self.create_aws_session()
         self.resource = self.create_s3_resource()
@@ -72,7 +73,7 @@ class S3Restore(object):
     def __init__(self):
        self.aws = AWSApiWrapper()
        self.MAX_THREAD_COUNT = self.aws.PAGE_SIZE
-    
+
     @classmethod
     @AWSMetrics.counter('number_of_objects')
     def restore_s3_object(cls, s3_obj_summary):
@@ -106,7 +107,8 @@ class S3Restore(object):
 
     @classmethod
     def _start_threads(cls, threads):
-        for thread in threads: thread.start()
+        for thread in threads:
+            thread.start()
         return threads
 
     @classmethod
@@ -141,10 +143,17 @@ class S3Restore(object):
         self._block_until_threads_finish(consumer_threads)
 
     def _create_single_producer_thread(self, objects):
-        return Thread(target=self.producer, args=(objects,))
+        thread = Thread(target=self.producer, args=(objects,))
+        thread.daemon = True
+        return thread
 
     def _create_consumer_threads(self):
-        return [Thread(target=self.consumer) for _ in range(self.MAX_THREAD_COUNT)]
+        threads = []
+        for _ in range(self.MAX_THREAD_COUNT):
+            thread = Thread(target=self.consumer)
+            thread.daemon = True
+            threads.append(thread)
+        return threads
 
     def _get_s3_objects_by_bucket_name(self, bucket):
         return self.aws.get_s3_objects_by_bucket_name(bucket)

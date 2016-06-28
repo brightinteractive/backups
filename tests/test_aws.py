@@ -126,6 +126,13 @@ class S3RestoreTests(unittest.TestCase):
         # has producer target
         self.assertEqual(producer_thread._Thread__target, restore.producer)
 
+    def test__producer_thread_is_a_daemon(self):
+        restore = S3Restore()
+        mock_bucket_contents = [Mock(), Mock(), Mock()]
+        producer_thread = restore._create_single_producer_thread(mock_bucket_contents)
+
+        self.assertTrue(producer_thread.daemon)
+
     def test__we_create_as_many_consumer_threads_as_there_are_objects_in_an_aws_objects_page(self):
         restore = S3Restore()
         aws_objects_page_size = restore.aws.PAGE_SIZE
@@ -134,4 +141,10 @@ class S3RestoreTests(unittest.TestCase):
         number_of_consumer_threads = len(consumer_threads)
 
         self.assertEqual(number_of_consumer_threads, aws_objects_page_size)
+
+    def test__all_consumer_threads_are_daemons(self):
+        restore = S3Restore()
+        consumer_threads = restore._create_consumer_threads()
+        for thread in consumer_threads:
+            self.assertTrue(thread.daemon)
 
