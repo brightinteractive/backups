@@ -16,6 +16,7 @@ class Restore(Thread):
     def __init__(self, bucket, *args, **kwargs):
         super(Restore, self).__init__(*args, **kwargs)
         self.restore = S3Restore()
+        self.daemon = True
         self.bucket = bucket
 
     def run(self):
