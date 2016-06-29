@@ -6,7 +6,10 @@ from Queue import Queue
 import boto3
 from mock import patch, Mock, MagicMock
 
-from s3backups.aws import AWSApiWrapper, S3Restore
+from s3backups.s3 import S3Restore
+from s3backups.aws import AWSApiWrapper
+from s3backups.dry_run import DryRun
+
 from utils import mock_aws_response
 
 

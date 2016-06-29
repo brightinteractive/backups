@@ -5,7 +5,8 @@ import unittest
 
 from mock import patch, Mock, MagicMock
 
-from s3backups.aws import S3Restore, AWSApiWrapper, AWSMetrics
+from s3backups.aws import AWSApiWrapper, AWSMetrics
+from s3backups.s3 import S3Restore 
 from utils import mock_aws_response
 
 

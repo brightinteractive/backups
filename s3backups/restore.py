@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 
 import argparse
+from time import sleep
+from threading import Thread
+import curses
+
+from jinja2 import Environment, PackageLoader
 
 from config import EnvironmentVariables
 from parser import parse_args
-from threading import Thread
-from aws import S3Restore, AWSMetrics
+from s3 import S3Restore
 from dry_run import DryRun
-from jinja2 import Environment, PackageLoader
-from time import sleep
-import curses
-
+from aws import AWSMetrics
 
 class Restore(Thread):
     def __init__(self, bucket, *args, **kwargs):
@@ -35,7 +36,7 @@ class Display(object):
         while self.thread.isAlive():
             self.update()
             sleep(self.REFRESH_PERIOD)
-        window.getkey()
+        self.window.getkey()
         curses.endwin()
 
     def update(self):

@@ -5,7 +5,7 @@ import unittest, os, collections
 import boto3
 
 from s3backups.aws import AWSApiWrapper
-from config import EnvironmentVariables
+from s3backups.config import EnvironmentVariables
 
 
 class AWSApiWrapperTestsIT(unittest.TestCase):
