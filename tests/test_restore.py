@@ -6,7 +6,7 @@ from mock import Mock, patch
 
 from s3backups.restore import Restore, main, setup
 from s3backups.parser import create_parser
-from s3backups.aws import S3Restore
+from s3backups.aws import BucketRestore
 
 
 class RestoreSetupTests(unittest.TestCase):
@@ -37,7 +37,7 @@ class RestoreThreadTests(unittest.TestCase):
     def test__we_can_create_a_thread_to_restore_a_bucket(self):
         name_of_bucket_to_be_restored = 'test bucket'
 
-        with patch.object(S3Restore, 'bucket') as restore_bucket:
+        with patch.object(BucketRestore, 'bucket') as restore_bucket:
             thread = Restore(name_of_bucket_to_be_restored)
             thread.start()
             restore_bucket.assert_called_with(name_of_bucket_to_be_restored)

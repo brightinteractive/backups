@@ -10,12 +10,12 @@ from jinja2 import Environment, PackageLoader
 from config import EnvironmentVariables
 from parser import parse_args
 from utils.dry_run import DryRun
-from aws import AWSMetrics, S3Restore
+from aws import AWSMetrics, BucketRestore
 
 class Restore(Thread):
     def __init__(self, bucket, *args, **kwargs):
         super(Restore, self).__init__(*args, **kwargs)
-        self.restore = S3Restore()
+        self.restore = BucketRestore()
         self.daemon = True
         self.bucket = bucket
 

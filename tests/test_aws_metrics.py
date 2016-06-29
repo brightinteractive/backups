@@ -5,7 +5,7 @@ import unittest
 
 from mock import patch, Mock, MagicMock
 
-from s3backups.aws import AWSApiWrapper, AWSMetrics, S3Restore 
+from s3backups.aws import AWSApiWrapper, AWSMetrics, ObjectRestore 
 from utils import mock_aws_response
 
 
@@ -13,14 +13,14 @@ class AWSMetricsTests(unittest.TestCase):
     def setUp(self):
         AWSMetrics.reset()
 
-    @patch.object(S3Restore, '_object_should_be_restored', return_value=False)
+    @patch.object(ObjectRestore, '_object_should_be_restored', return_value=False)
     def test__we_can_incrementally_record_the_number_of_objects_in_a_bucket(self, mock_restore):
-        S3Restore.restore_s3_object(object())
+        ObjectRestore.restore_s3_object(object())
         number_of_recorded_objects = AWSMetrics.report['number_of_objects']
         self.assertEqual(number_of_recorded_objects, 1)
 
-        S3Restore.restore_s3_object(object())
-        S3Restore.restore_s3_object(object())
+        ObjectRestore.restore_s3_object(object())
+        ObjectRestore.restore_s3_object(object())
         number_of_recorded_objects = AWSMetrics.report['number_of_objects']
         self.assertEqual(number_of_recorded_objects, 3)
 
@@ -29,11 +29,11 @@ class AWSMetricsTests(unittest.TestCase):
         mock_s3_object = Mock()
         mock_s3_object.restore_object = Mock(return_value=mock_response)
 
-        S3Restore.call_restore(mock_s3_object)
+        ObjectRestore.call_restore(mock_s3_object)
         number_of_requests = AWSMetrics.report['number_of_requests']
         self.assertEqual(number_of_requests, 1)
 
-        for _ in range(4): S3Restore.call_restore(mock_s3_object)
+        for _ in range(4): ObjectRestore.call_restore(mock_s3_object)
         number_of_requests = AWSMetrics.report['number_of_requests']
         self.assertEqual(number_of_requests, 5)
 
@@ -45,7 +45,7 @@ class AWSMetricsTests(unittest.TestCase):
                 response = mock_aws_response(HTTPStatusCode=status_code)
                 mock_s3_object = Mock()
                 mock_s3_object.restore_object = MagicMock(return_value=response)
-                S3Restore.call_restore(mock_s3_object)
+                ObjectRestore.call_restore(mock_s3_object)
 
         recorded_status_codes = AWSMetrics.report['restore_object_status_codes']
         self.assertEqual(status_codes_and_their_frequencies, recorded_status_codes)
@@ -57,8 +57,8 @@ class AWSMetricsTests(unittest.TestCase):
         mock_s3_standard_object = Mock()
         mock_s3_standard_object.storage_class = 'STANDARD'
 
-        S3Restore.is_glacier_type(mock_s3_glacier_object)
-        S3Restore.is_glacier_type(mock_s3_standard_object)
+        ObjectRestore.is_glacier_type(mock_s3_glacier_object)
+        ObjectRestore.is_glacier_type(mock_s3_standard_object)
 
         number_of_glacier_objects = AWSMetrics.report['number_of_glacier_objects']
         self.assertEquals(number_of_glacier_objects, 1)
@@ -74,8 +74,8 @@ class AWSMetricsTests(unittest.TestCase):
         mock_s3_restored_object.Object = MagicMock(return_value=mock_s3_detail_object)
         mock_s3_detail_object.restore = 'I am restored'
 
-        S3Restore.is_not_restored(mock_s3_unrestored_object)
-        S3Restore.is_not_restored(mock_s3_restored_object)
+        ObjectRestore.is_not_restored(mock_s3_unrestored_object)
+        ObjectRestore.is_not_restored(mock_s3_restored_object)
 
         number_of_unrestored_objects = AWSMetrics.report['number_of_unrestored_objects']
         self.assertEquals(number_of_unrestored_objects, 1)
