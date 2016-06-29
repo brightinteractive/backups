@@ -9,7 +9,7 @@ from s3backups.config import EnvironmentVariables
 
 
 class AWSApiWrapperTestsIT(unittest.TestCase):
-    def setup(self):
+    def setUp(self):
         EnvironmentVariables.inject()
 
     def test__we_can_create_an_aws_session(self):

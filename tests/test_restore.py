@@ -8,12 +8,17 @@ from s3backups.restore import Restore, main, setup
 from s3backups.parser import create_parser
 from s3backups.aws import BucketRestore
 
+from s3backups.config import EnvironmentVariables
+
 
 class RestoreSetupTests(unittest.TestCase):
     def test__aws_credentials_are_available_as_environment_variables(self):
-        setup()
-        self.assertTrue(os.environ.has_key('AWS_SECRET_ACCESS_KEY'))
-        self.assertTrue(os.environ.has_key('AWS_ACCESS_KEY_ID'))
+        with patch.dict(os.environ, {}, clear=True):
+
+            EnvironmentVariables.inject()
+
+            self.assertTrue(os.environ.has_key('AWS_SECRET_ACCESS_KEY'))
+            self.assertTrue(os.environ.has_key('AWS_ACCESS_KEY_ID'))
 
 class RestoreCommandLineTests(unittest.TestCase):
     def test__we_can_retrieve_the_name_of_the_bucket_to_be_restored_from_commandline_arguments(self):
