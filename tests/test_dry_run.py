@@ -2,7 +2,7 @@
 
 import unittest
 
-from s3backups.dry_run import DryRun
+from s3backups.utils.dry_run import DryRun
 
 from mock import Mock, patch
 

@@ -9,9 +9,8 @@ from jinja2 import Environment, PackageLoader
 
 from config import EnvironmentVariables
 from parser import parse_args
-from s3 import S3Restore
-from dry_run import DryRun
-from aws import AWSMetrics
+from utils.dry_run import DryRun
+from aws import AWSMetrics, S3Restore
 
 class Restore(Thread):
     def __init__(self, bucket, *args, **kwargs):

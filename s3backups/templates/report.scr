@@ -7,5 +7,10 @@
  total number of objects:    | {{number_of_objects}}           
 =================================================================
  requests made:              | {{number_of_requests}}          
------------------------------------------------------------------
+----------------------------------------------------------------
+{% if restore_object_status_codes %}
+    {% for status_code, total in restore_object_status_codes.iteritems() %}
+ {{status_code}}:            | {{total}}          
+    {% endfor %}
+{% endif %}
 

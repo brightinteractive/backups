@@ -6,7 +6,7 @@ from mock import Mock, patch
 
 from s3backups.restore import Restore, main, setup
 from s3backups.parser import create_parser
-from s3backups.s3 import S3Restore
+from s3backups.aws import S3Restore
 
 
 class RestoreSetupTests(unittest.TestCase):

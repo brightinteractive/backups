@@ -2,7 +2,7 @@
 
 import unittest, collections
 
-from s3backups.metrics import Metrics
+from s3backups.utils.metrics import Metrics
 
 
 class MetricsTests(unittest.TestCase):

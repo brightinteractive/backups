@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from s3backups.metrics import Metrics
+from s3backups.utils.metrics import Metrics
 
 class AWSMetrics(Metrics):
     available_metrics = (

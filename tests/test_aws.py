@@ -6,9 +6,8 @@ from Queue import Queue
 import boto3
 from mock import patch, Mock, MagicMock
 
-from s3backups.s3 import S3Restore
-from s3backups.aws import AWSApiWrapper
-from s3backups.dry_run import DryRun
+from s3backups.aws import AWSApiWrapper, S3Restore
+from s3backups.utils.dry_run import DryRun
 
 from utils import mock_aws_response
 
@@ -31,6 +30,7 @@ class AWSApiWrapperTests(unittest.TestCase):
 class S3RestoreTests(unittest.TestCase):
     def setUp(self):
         S3Restore.reset()
+        DryRun.reset()
 
     def test__we_can_identify_an_s3_object_with_glacier_storage_class(self):
         mock_s3_object = Mock()
@@ -68,7 +68,7 @@ class S3RestoreTests(unittest.TestCase):
 
     def test__we_restore_an_object_for_seven_days(self):
         mock_summary_object = Mock()
-        mock_summary_object.restore_object = Mock()
+        mock_summary_object.restore_object = MagicMock(return_value=mock_aws_response())
         expected_api_call = mock_summary_object.restore_object
 
         result = S3Restore.call_restore(mock_summary_object)
@@ -150,4 +150,15 @@ class S3RestoreTests(unittest.TestCase):
         consumer_threads = restore._create_consumer_threads()
         for thread in consumer_threads:
             self.assertTrue(thread.daemon)
+
+
+    def test__we_dont_restore_an_object_when_in_dry_run_mode(self):
+        mock_s3_object = Mock()
+        mock_s3_object.restore_object = MagicMock(return_value=mock_aws_response())
+
+        DryRun.set()
+        S3Restore.call_restore(mock_s3_object)
+
+        mock_s3_object.restore_object.assert_not_called()
+
 
