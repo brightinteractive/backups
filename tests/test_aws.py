@@ -2,11 +2,12 @@
 
 import unittest, os, collections
 from Queue import Queue
+from threading import Thread
 
 import boto3
 from mock import patch, Mock, MagicMock
 
-from s3backups.aws import AWSApiWrapper, ObjectRestore, BucketRestore
+from s3backups.aws import AWSApiWrapper, ObjectRestore, BucketRestore, Restore
 from s3backups.utils.dry_run import DryRun
 
 from utils import mock_aws_response
@@ -166,7 +167,17 @@ class BucketRestoreTests(unittest.TestCase):
         for thread in consumer_threads:
             self.assertTrue(thread.daemon)
 
+class RestoreTests(unittest.TestCase):
+    def test__we_can_restore_a_bucket_in_its_own_thread(self):
+        with patch.object(BucketRestore, 'bucket') as mock:
+            thread = Restore('test bucket')
 
+            thread.run()
 
+            self.assertIsInstance(thread, Thread)
+            mock.assert_called_with('test bucket')
 
+    def test__restore_thread_is_a_daemon(self):
+            thread = Restore('test bucket')
+            self.assertTrue(thread.daemon)
 

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import argparse
 from time import sleep
 from threading import Thread
 import curses
@@ -10,17 +9,7 @@ from jinja2 import Environment, PackageLoader
 from config import EnvironmentVariables
 from parser import parse_args
 from utils.dry_run import DryRun
-from aws import AWSMetrics, BucketRestore
-
-class Restore(Thread):
-    def __init__(self, bucket, *args, **kwargs):
-        super(Restore, self).__init__(*args, **kwargs)
-        self.restore = BucketRestore()
-        self.daemon = True
-        self.bucket = bucket
-
-    def run(self):
-        self.restore.bucket(self.bucket)
+from aws import AWSMetrics, Restore
 
 
 class Display(object):
@@ -64,7 +53,6 @@ def main(window, settings):
 
     display = Display(thread, window)
     display.progress()
-
 
 if __name__ == '__main__':
     settings = setup()

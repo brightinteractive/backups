@@ -105,3 +105,14 @@ class BucketRestore(object):
     def _get_s3_objects_by_bucket_name(self, bucket):
         return self.aws.get_s3_objects_by_bucket_name(bucket)
 
+
+class Restore(Thread):
+    def __init__(self, bucket, *args, **kwargs):
+        super(Restore, self).__init__(*args, **kwargs)
+        self.restore = BucketRestore()
+        self.daemon = True
+        self.bucket = bucket
+
+    def run(self):
+        self.restore.bucket(self.bucket)
+
