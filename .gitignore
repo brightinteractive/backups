@@ -14,3 +14,9 @@
 *.yml#
 # Configuration file
 config.py
+run-tests-on-change.sh
+
+# setup.py 
+build/
+dist/
+*.egg-info
