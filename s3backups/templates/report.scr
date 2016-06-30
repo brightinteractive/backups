@@ -1,16 +1,7 @@
-+---------------------------------------------------------------+
-| Step 1: Restore AWS S3 Bucket                                 | 
-+---------------------------------------------------------------+
- bucket:                     | {{bucket_name}}
+ Restore AWS S3 Bucket:      | {{bucket_name}}                            
+
  glacier objects:            | {{number_of_glacier_objects}}   
  unrestored objects:         | {{number_of_unrestored_objects}}
  total number of objects:    | {{number_of_objects}}           
-=================================================================
  requests made:              | {{number_of_requests}}          
-----------------------------------------------------------------
-{% if restore_object_status_codes %}
-    {% for status_code, total in restore_object_status_codes.iteritems() %}
- {{status_code}}:            | {{total}}          
-    {% endfor %}
-{% endif %}
 
