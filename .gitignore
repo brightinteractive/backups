@@ -21,3 +21,4 @@ run-tests-on-change.sh
 build/
 dist/
 *.egg-info
+tags
