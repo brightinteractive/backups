@@ -3,6 +3,7 @@
 *~
 *#
 *.swp
+*.swo
 *.un~
 # ignore vim and exim history files
 *~
