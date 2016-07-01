@@ -159,6 +159,7 @@ class BucketRestoreTests(unittest.TestCase):
         for thread in consumer_threads:
             self.assertTrue(thread.daemon)
 
+
 class RestoreTests(unittest.TestCase):
     def test__we_can_restore_a_bucket_in_its_own_thread(self):
         with patch.object(BucketRestore, 'bucket') as mock:
