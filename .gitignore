@@ -22,3 +22,7 @@ build/
 dist/
 *.egg-info
 tags
+
+.cache
+# vagrant 
+.vagrant
