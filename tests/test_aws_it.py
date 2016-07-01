@@ -5,13 +5,9 @@ import unittest, os, collections
 import boto3
 
 from s3backups.aws import AWSApiWrapper
-from s3backups.config import EnvironmentVariables
 
 
 class AWSApiWrapperTestsIT(unittest.TestCase):
-    def setUp(self):
-        EnvironmentVariables.inject()
-
     def test__we_can_create_an_aws_session(self):
         aws = AWSApiWrapper()
         session = aws.create_aws_session()
