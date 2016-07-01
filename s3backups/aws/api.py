@@ -8,7 +8,7 @@ class AWSApiWrapper(object):
         self.resource = self.create_s3_resource()
 
     def create_aws_session(self):
-        return boto3.session.Session()
+        return boto3.session.Session(profile_name='s3backups')
 
     def create_s3_resource(self):
         return self.session.resource('s3')

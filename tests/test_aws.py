@@ -14,18 +14,10 @@ from utils import mock_aws_response
 
 
 class AWSApiWrapperTests(unittest.TestCase):
-    def test__we_can_create_an_aws_session_with_credentials_stored_in_environment_variables(self):
-        test_credentials = {
-                'AWS_ACCESS_KEY_ID':'test access key',
-                'AWS_SECRET_ACCESS_KEY':'test secret key'
-                }
-
-        with patch.dict('os.environ', test_credentials):
-            aws = AWSApiWrapper()
-            session = aws.create_aws_session()
-            credentials = session.get_credentials()
-            self.assertEqual(test_credentials['AWS_ACCESS_KEY_ID'], credentials.access_key)
-            self.assertEqual(test_credentials['AWS_SECRET_ACCESS_KEY'], credentials.secret_key)
+    def test__we_can_create_an_aws_session_with_the_s3backups_profile(self):
+        aws = AWSApiWrapper()
+        session = aws.create_aws_session()
+        self.assertEqual(session.profile_name,'s3backups')
 
 
 class ObjectRestoreTests(unittest.TestCase):
