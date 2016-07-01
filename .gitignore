@@ -1,0 +1,28 @@
+.idea/
+# ignore vim and emacs history files
+*~
+*#
+*.swp
+*.swo
+*.un~
+# ignore vim and exim history files
+*~
+# ignore compiled python
+*.pyc
+# ignore emacs history files
+*~
+\#*\#
+*.yml#
+# Configuration file
+config.py
+run-tests-on-change.sh
+
+# setup.py 
+build/
+dist/
+*.egg-info
+tags
+
+.cache
+# vagrant 
+.vagrant
