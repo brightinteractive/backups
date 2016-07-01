@@ -19,3 +19,4 @@ class AWSApiWrapper(object):
     def get_s3_objects_by_bucket_name(self, bucket_name):
         bucket = self.get_s3_bucket_by_name(bucket_name)
         return bucket.objects.page_size(count=self.PAGE_SIZE)
+
