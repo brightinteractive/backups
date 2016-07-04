@@ -21,6 +21,9 @@ run-tests-on-change.sh
 build/
 dist/
 *.egg-info
+.eggs/
+
+# ctags
 tags
 
 .cache
