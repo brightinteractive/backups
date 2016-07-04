@@ -33,3 +33,18 @@ class AWSApiWrapperTestsIT(unittest.TestCase):
         returned_object_keys = set([object.key for object in objects])
         self.assertEqual(expected_object_keys, returned_object_keys)
 
+    def test__we_can_copy_an_object_to_another_bucket(self):
+        ''' For this tet to pass there must be a bucket called test-copy-source and test-copy-dest, 
+            test-copy-dest must contain a file called one.txt
+        '''
+        aws = AWSApiWrapper()
+        # delete all objects in destination bucket
+        for object in aws.get_s3_objects_by_bucket_name('test-copy-dest'): object.delete()
+        src = aws.create_s3_object('test-copy-source', 'one.txt') 
+        dest = aws.create_s3_object('test-copy-dest', 'one.txt') 
+
+        aws.copy(src, dest)
+
+        bucket = aws.get_s3_bucket_by_name('test-copy-dest')
+        dest.get()
+

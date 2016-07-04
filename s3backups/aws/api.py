@@ -20,3 +20,10 @@ class AWSApiWrapper(object):
         bucket = self.get_s3_bucket_by_name(bucket_name)
         return bucket.objects.page_size(count=self.PAGE_SIZE)
 
+    def copy(sef, src, dst):
+        return dst.copy_from(CopySource={'Bucket':src.bucket_name, 'Key':src.key})
+
+    def create_s3_object(self, bucket_name, key):
+        s3 = self.create_s3_resource()
+        return s3.Object(bucket_name, key)
+
