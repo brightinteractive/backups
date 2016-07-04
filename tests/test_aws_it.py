@@ -43,7 +43,7 @@ class AWSApiWrapperTestsIT(unittest.TestCase):
         src = aws.create_s3_object('test-copy-source', 'one.txt') 
         dest = aws.create_s3_object('test-copy-dest', 'one.txt') 
 
-        aws.copy(src, dest)
+        aws.copy(src, 'test-copy-dest')
 
         bucket = aws.get_s3_bucket_by_name('test-copy-dest')
         dest.get()
