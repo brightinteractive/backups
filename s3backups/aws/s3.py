@@ -6,6 +6,7 @@ from threading import Thread
 from s3backups.utils.dry_run import DryRun
 from api import AWSApiWrapper
 from metrics import AWSMetrics
+from glacier import GlacierPath
 
 
 class ObjectRestore(object):
@@ -116,3 +117,17 @@ class Restore(Thread):
     def run(self):
         self.restore.bucket(self.bucket)
 
+
+class ObjectCopy(object):
+    @classmethod
+    def has_timestamp(cls, s3_object):
+        key, timestamp = GlacierPath.split(s3_object.key)
+        return bool(timestamp)
+
+class BucketCopy(object):
+    def __init__(self, bucket_name):
+        self.aws = AWSApiWrapper()
+        self.bucket = bucket_name 
+
+    def copy(self, s3_object):
+        return self.aws.copy(s3_object, self.bucket)

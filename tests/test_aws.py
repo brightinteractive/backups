@@ -7,7 +7,7 @@ from threading import Thread
 import boto3
 from mock import patch, Mock, MagicMock
 
-from s3backups.aws import AWSApiWrapper, ObjectRestore, BucketRestore, Restore
+from s3backups.aws import AWSApiWrapper, ObjectRestore, BucketRestore, Restore, ObjectCopy, BucketCopy
 from s3backups.utils.dry_run import DryRun
 
 from utils import mock_aws_response
@@ -173,4 +173,28 @@ class RestoreTests(unittest.TestCase):
     def test__restore_thread_is_a_daemon(self):
             thread = Restore('test bucket')
             self.assertTrue(thread.daemon)
+
+class ObjectCopyTests(unittest.TestCase):
+    def test__we_can_tell_if_an_s3object_is_timestamped(self):
+        mock_s3_object_with_timestamp = Mock()
+        mock_s3_object_with_timestamp.key = 'some_picture.jpeg_2014-02-13 18:19:06'
+
+        self.assertTrue(ObjectCopy.has_timestamp(mock_s3_object_with_timestamp))
+
+        mock_s3_object_without_timestamp = Mock()
+        mock_s3_object_without_timestamp.key = 'some_picture.jpeg'
+
+        self.assertFalse(ObjectCopy.has_timestamp(mock_s3_object_without_timestamp))
+
+
+class BucketCopyTests(unittest.TestCase):
+    def test__we_can_copy_an_object_to_the_current_bucket(self):
+        destination_bucket_name = object()
+        mock_s3_object = Mock()
+
+        with patch.object(AWSApiWrapper, 'copy') as mock:
+            bucket = BucketCopy(destination_bucket_name)
+            bucket.copy(mock_s3_object)
+            mock.assert_called_with(mock_s3_object, destination_bucket_name)
+
 
