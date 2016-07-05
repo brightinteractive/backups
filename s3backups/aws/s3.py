@@ -135,6 +135,21 @@ class ObjectCopy(object):
         key_B, timestamp_B = GlacierPath.split(s3_object_B.key)
         return (key_A == key_B)
 
+    @classmethod
+    def get_latest(cls, s3_object_A, s3_object_B):
+        timestamp_A = GlacierPath.datetime(s3_object_A.key)
+        timestamp_B = GlacierPath.datetime(s3_object_B.key)
+        try:
+            if timestamp_A > timestamp_B:
+                return s3_object_A
+            else:
+                return s3_object_B
+        except TypeError:
+            if timestamp_A:
+                return s3_object_A
+            else:
+                return s3_object_B
+
 
 class BucketCopy(object):
     def __init__(self, bucket_name):

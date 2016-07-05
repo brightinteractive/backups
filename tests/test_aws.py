@@ -204,10 +204,31 @@ class ObjectCopyTests(unittest.TestCase):
         self.assertTrue(ObjectCopy.have_identical_keys(mock_s3_object_A, mock_s3_object_B))
 
 
-class BucketCopyTests(unittest.TestCase):
-    def test__we_can_copy_an_object_to_the_current_bucket(self):
-        destination_bucket_name = object()
+    def test__we_can_get_the_latest_of_two_s3objects(self):
+        mock_s3_object_latest = Mock()
+        mock_s3_object_latest.key = 'some_picture.jpeg_2014-02-13 18:19:06'
+
         mock_s3_object = Mock()
+        mock_s3_object.key = 'some_picture.jpeg_2012-02-13 18:19:06'
+
+        mock_s3_object_without_timestamp = Mock()
+        mock_s3_object_without_timestamp.key = 'some_picture.jpeg'
+
+        mock_s3_object_another_without_timestamp = Mock()
+        mock_s3_object_another_without_timestamp.key = 'another_picture.jpeg'
+
+        # compare two timestamped objects...
+        latest_object = ObjectCopy.get_latest(mock_s3_object, mock_s3_object_latest)
+        self.assertEqual(latest_object, mock_s3_object_latest)
+
+        # ...compare one timestamped object with a bject without timestamp...
+        latest_object = ObjectCopy.get_latest(mock_s3_object_latest, mock_s3_object_without_timestamp)
+        self.assertEqual(latest_object, mock_s3_object_latest)
+
+        latest_object = ObjectCopy.get_latest(mock_s3_object_another_without_timestamp, mock_s3_object_without_timestamp)
+        self.assertEqual(latest_object, mock_s3_object_without_timestamp)
+
+
 
         with patch.object(AWSApiWrapper, 'copy') as mock:
             bucket = BucketCopy(destination_bucket_name)
