@@ -222,3 +222,17 @@ class BucketCopyTests(unittest.TestCase):
             mock_copy.assert_called_with(mock_s3_without_timestamp)
             self.assertTrue(mock_copy.call_count, 1)
 
+    @patch.object(BucketCopy, '_get_s3_objects_by_bucket_name')
+    def test__if_an_object_has_a_timestamp_it_is_copied_with_its_timestamp_removed(self, mock_bucket):
+        mock_s3_timestamp = Mock()
+        mock_s3_timestamp.key = 'some_picture.jpeg_2014-02-13 18:19:06'
+
+        key_with_timestamp_removed = 'some_picture.jpeg'
+
+        mock_bucket.return_value = [mock_s3_timestamp]
+        bucket = BucketCopy('destination-bucket-name')
+
+        with patch.object(BucketCopy, 'copy_object') as mock_copy:
+            bucket.copy('source-bucket')
+            mock_copy.assert_called_with(mock_s3_timestamp, new_key=key_with_timestamp_removed)
+
