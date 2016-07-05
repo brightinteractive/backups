@@ -186,6 +186,14 @@ class ObjectCopyTests(unittest.TestCase):
 
         self.assertFalse(ObjectCopy.has_timestamp(mock_s3_object_without_timestamp))
 
+    def test__we_can_extract_the_key_from_an_s3object_that_is_timestamped(self):
+        mock_s3_object_with_timestamp = Mock()
+        mock_s3_object_with_timestamp.key = 'some_picture.jpeg_2014-02-13 18:19:06'
+
+        key_with_timestamp_removed= ObjectCopy.extract_key(mock_s3_object_with_timestamp)
+
+        self.assertEqual(key_with_timestamp_removed, "some_picture.jpeg")
+
 
 class BucketCopyTests(unittest.TestCase):
     def test__we_can_copy_an_object_to_the_current_bucket(self):

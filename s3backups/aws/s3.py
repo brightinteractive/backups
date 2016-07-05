@@ -124,6 +124,11 @@ class ObjectCopy(object):
         key, timestamp = GlacierPath.split(s3_object.key)
         return bool(timestamp)
 
+    @classmethod
+    def extract_key(cls, s3_object):
+        key, timestamp = GlacierPath.split(s3_object.key)
+        return key
+
 class BucketCopy(object):
     def __init__(self, bucket_name):
         self.aws = AWSApiWrapper()
