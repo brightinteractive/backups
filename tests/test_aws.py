@@ -194,7 +194,23 @@ class BucketCopyTests(unittest.TestCase):
 
         with patch.object(AWSApiWrapper, 'copy') as mock:
             bucket = BucketCopy(destination_bucket_name)
-            bucket.copy(mock_s3_object)
+            bucket.copy_object(mock_s3_object)
             mock.assert_called_with(mock_s3_object, destination_bucket_name)
+    
+    @patch.object(BucketCopy, '_get_s3_objects_by_bucket_name')
+    def test__we_can_copy_all_objects_in_a_bucket_that_do_not_have_a_timestamp(self, mock_bucket):
+        mock_s3_timestamp = Mock()
+        mock_s3_timestamp.key = 'some_picture.jpeg_2014-02-13 18:19:06'
 
+        mock_s3_without_timestamp = Mock()
+        mock_s3_without_timestamp.key = 'another_picture'
+
+        mock_bucket.return_value = [mock_s3_timestamp, mock_s3_without_timestamp]
+        bucket = BucketCopy('destination-bucket-name')
+
+        with patch.object(BucketCopy, 'copy_object') as mock_copy:
+            bucket.copy('source-bucket')
+
+            mock_copy.assert_called_with(mock_s3_without_timestamp)
+            self.assertTrue(mock_copy.call_count, 1)
 

@@ -129,5 +129,15 @@ class BucketCopy(object):
         self.aws = AWSApiWrapper()
         self.bucket = bucket_name 
 
-    def copy(self, s3_object):
+    def copy(self, bucket_name):
+        objects = self._get_s3_objects_by_bucket_name(bucket_name)
+        for object in objects:
+            if not ObjectCopy.has_timestamp(object):
+                self.copy_object(object)
+
+    def copy_object(self, s3_object):
         return self.aws.copy(s3_object, self.bucket)
+
+    def _get_s3_objects_by_bucket_name(self, bucket):
+        return self.aws.get_s3_objects_by_bucket_name(bucket)
+
