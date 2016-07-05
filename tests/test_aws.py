@@ -194,6 +194,15 @@ class ObjectCopyTests(unittest.TestCase):
 
         self.assertEqual(key_with_timestamp_removed, "some_picture.jpeg")
 
+    def test__we_can_tell_if_two_s3objects_have_identical_keys(self):
+        mock_s3_object_A = Mock()
+        mock_s3_object_A.key = 'some_picture.jpeg_2014-02-13 18:19:06'
+
+        mock_s3_object_B = Mock()
+        mock_s3_object_B.key = 'some_picture.jpeg_2011-03-13 12:09:06'
+
+        self.assertTrue(ObjectCopy.have_identical_keys(mock_s3_object_A, mock_s3_object_B))
+
 
 class BucketCopyTests(unittest.TestCase):
     def test__we_can_copy_an_object_to_the_current_bucket(self):

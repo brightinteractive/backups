@@ -129,6 +129,12 @@ class ObjectCopy(object):
         key, timestamp = GlacierPath.split(s3_object.key)
         return key
 
+    @classmethod
+    def have_identical_keys(cls, s3_object_A, s3_object_B):
+        key_A, timestamp_A = GlacierPath.split(s3_object_A.key)
+        key_B, timestamp_B = GlacierPath.split(s3_object_B.key)
+        return (key_A == key_B)
+
 
 class BucketCopy(object):
     def __init__(self, bucket_name):
