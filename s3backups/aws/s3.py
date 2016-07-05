@@ -156,18 +156,38 @@ class BucketCopy(object):
         self.aws = AWSApiWrapper()
         self.bucket = bucket_name 
 
+        self._latest_object = None
+
     def copy(self, bucket_name):
         objects = self._get_s3_objects_by_bucket_name(bucket_name)
+        self._copy_objects(objects)
+
+    def copy_object(self, s3_object):
+        return self.aws.copy(s3_object, self.bucket)
+
+    def copy_latest(self):
+        if self._latest_object:
+            latest_object_key = ObjectCopy.extract_key(self._latest_object)
+            self.copy_object(self._latest_object, new_key=latest_object_key) 
+            self._latest_object = None
+
+    def _copy_objects(self, objects):
         for s3object in objects:
             if not ObjectCopy.has_timestamp(s3object):
                 self.copy_object(s3object)
             else:
-                key_without_timestamp = ObjectCopy.extract_key(s3object)
-                self.copy_object(s3object, new_key=key_without_timestamp)
+                if self._latest_object:
+                    if ObjectCopy.have_identical_keys(s3object, self._latest_object):
+                        self._latest_object = ObjectCopy.get_latest(s3object, self._latest_object)
+                    else:
+                        self.copy_latest()
+                else:
+                    self._latest_object = s3object
 
+        self._flush()
 
-    def copy_object(self, s3_object):
-        return self.aws.copy(s3_object, self.bucket)
+    def _flush(self):
+        self.copy_latest()
 
     def _get_s3_objects_by_bucket_name(self, bucket):
         return self.aws.get_s3_objects_by_bucket_name(bucket)

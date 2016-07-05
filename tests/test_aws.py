@@ -266,3 +266,21 @@ class ObjectCopyTests(unittest.TestCase):
             bucket.copy('source-bucket')
             mock_copy.assert_called_with(mock_s3_timestamp, new_key=key_with_timestamp_removed)
 
+    @patch.object(BucketCopy, '_get_s3_objects_by_bucket_name')
+    def test__if_there_are_identical_keys_with_different_timestamps_only_copy_the_latest_version(self, mock_bucket):
+        mock_s3_latest = Mock()
+        mock_s3_latest.key = 'some_picture.jpeg_2014-02-13 18:19:06'
+
+        mock_s3_timestamp = Mock()
+        mock_s3_timestamp.key = 'some_picture.jpeg_2013-02-13 18:19:06'
+
+        mock_s3_another_timestamp = Mock()
+        mock_s3_another_timestamp.key = 'some_picture.jpeg_2012-02-13 18:19:06'
+
+        mock_bucket.return_value = [mock_s3_latest, mock_s3_timestamp, mock_s3_another_timestamp]
+        bucket = BucketCopy('destination-bucket-name')
+
+        with patch.object(BucketCopy, 'copy_object') as mock_copy:
+            bucket.copy('source-bucket')
+            mock_copy.assert_called_once()
+            # mock_copy.assert_called_with(mock_s3_latest)
